@@ -2,7 +2,7 @@ import csv
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
-# Função para ler e processar o arquivo CSV
+
 def read_csv_file(filename):
     data = []
     with open(filename, 'r') as file:
@@ -18,7 +18,7 @@ def read_csv_file(filename):
             })
     return data
 
-# Função para exibir dados filtrados por período e tipo
+
 def filter_and_display_data(data, start_month, start_year, end_month, end_year, data_type):
     filtered_data = [row for row in data if start_year <= int(row['data'][6:]) <= end_year and
                      (start_month <= int(row['data'][3:5]) if int(row['data'][6:]) == start_year else True) and
@@ -42,20 +42,19 @@ def filter_and_display_data(data, start_month, start_year, end_month, end_year, 
         for row in filtered_data:
             print(f"{row['data']} | {row['precipitacao']} | {row['temp_max']} | {row['temp_min']} | {row['umidade']} | {row['vento']}")
 
-# Função para encontrar o mês mais chuvoso
+
 def most_rainy_month(data):
     monthly_precipitation = defaultdict(float)
     
     for row in data:
-        year_month = row['data'][3:7]  # MM-YYYY
+        year_month = row['data'][3:7]  
         if row['precipitacao'] is not None:
             monthly_precipitation[year_month] += row['precipitacao']
     
-    # Encontrar o mês com a maior precipitação
     max_month = max(monthly_precipitation, key=monthly_precipitation.get)
     print(f"Mês mais chuvoso: {max_month} com {monthly_precipitation[max_month]:.2f} mm")
 
-# Função para calcular a média da temperatura mínima de um determinado mês nos últimos 11 anos
+
 def avg_min_temp_last_11_years(data, target_month):
     temp_min_data = defaultdict(list)
     
@@ -73,7 +72,6 @@ def avg_min_temp_last_11_years(data, target_month):
     
     return avg_temp_min
 
-# Função para gerar gráfico de barras
 def plot_min_temp(avg_temp_min):
     years = list(avg_temp_min.keys())
     temps = list(avg_temp_min.values())
@@ -86,7 +84,7 @@ def plot_min_temp(avg_temp_min):
     plt.tight_layout()
     plt.show()
 
-# Função para calcular a média geral da temperatura mínima
+
 def overall_avg_min_temp(avg_temp_min):
     overall_avg = sum(avg_temp_min.values()) / len(avg_temp_min)
     print(f"\nMédia geral da temperatura mínima: {overall_avg:.2f}°C")
@@ -94,22 +92,22 @@ def overall_avg_min_temp(avg_temp_min):
 def main():
     data = read_csv_file('dados.csv')
     
-    # Exibição dos dados filtrados
+
     start_month, start_year = 1, 2006
     end_month, end_year = 12, 2016
     filter_and_display_data(data, start_month, start_year, end_month, end_year, 'temperatura')
     
-    # Mês mais chuvoso
+
     most_rainy_month(data)
     
-    # Média de temperatura mínima para um mês específico
-    target_month = 8  # Agosto
+
+    target_month = 8  
     avg_temp_min = avg_min_temp_last_11_years(data, target_month)
     
-    # Gráfico de barras
+
     plot_min_temp(avg_temp_min)
     
-    # Média geral
+
     overall_avg_min_temp(avg_temp_min)
 
 if __name__ == '__main__':
